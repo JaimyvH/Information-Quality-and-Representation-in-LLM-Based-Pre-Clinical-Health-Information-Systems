@@ -6,9 +6,8 @@ This repository contains the working materials for a Master's thesis on how larg
 
 - `AI_Health_Query_Prompt_Bank.xlsx` - initial prompt bank for the study.
 - `AI_Health_Query_Prompt_Bank_filled.xlsx` - completed prompt bank used for model runs.
-- `runmodelsscript.py` - script for sending prompts to locally running Ollama models and saving model outputs.
+- `runmodelsscript.py` - resumable script for sending prompts to locally running Ollama models and saving model outputs.
 - `llama13b`, `llama70b`, `qwen14b`, `qwen72b` - Ollama model definition files with shared generation settings.
-- `Assessing_Information_Quality_and_Representation_in_LLM_Based_Pre_Clinical_Health_Information_Systems (4).pdf` - current thesis draft.
 
 ## Models
 
@@ -27,4 +26,18 @@ The script expects Ollama to be running locally at:
 http://localhost:11434/api/generate
 ```
 
-It reads prompts from `AI_Health_Query_Prompt_Bank_filled.xlsx`, sends each prompt to the configured models, and writes the outputs to `results.xlsx`.
+It reads prompts from `AI_Health_Query_Prompt_Bank_filled.xlsx`, sends each prompt to the configured models, and writes the outputs to `results.xlsx` plus a CSV backup.
+
+The script runs all prompts for one model before switching to the next model. This keeps large models loaded in Ollama longer and avoids repeated reloads.
+
+```powershell
+python runmodelsscript.py
+```
+
+Useful options:
+
+```powershell
+python runmodelsscript.py --models llama70b --num-ctx 4096
+python runmodelsscript.py --models llama13 qwen14b --repeats 4
+python runmodelsscript.py --force
+```
