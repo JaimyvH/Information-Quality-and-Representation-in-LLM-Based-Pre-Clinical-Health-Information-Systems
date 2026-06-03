@@ -2,6 +2,7 @@ pandas
 openpyxl
 transformers>=4.51.0
 accelerate
+bitsandbytes>=0.46.1
 safetensors
 sentencepiece
 protobuf
