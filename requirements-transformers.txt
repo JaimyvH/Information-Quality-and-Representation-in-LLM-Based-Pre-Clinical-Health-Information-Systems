@@ -1,0 +1,7 @@
+pandas
+openpyxl
+transformers>=4.51.0
+accelerate
+safetensors
+sentencepiece
+protobuf

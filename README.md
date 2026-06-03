@@ -7,7 +7,9 @@ This repository contains the working materials for a Master's thesis on how larg
 - `AI_Health_Query_Prompt_Bank.xlsx` - initial prompt bank for the study.
 - `AI_Health_Query_Prompt_Bank_filled.xlsx` - completed prompt bank used for model runs.
 - `runmodelsscript.py` - resumable script for sending prompts to locally running Ollama models and saving model outputs.
-- `llama13b`, `llama70b`, `qwen14b`, `qwen72b` - Ollama model definition files with shared generation settings.
+- `run_transformers_prompts.py` - Hugging Face Transformers runner for the final controlled experiment.
+- `model_configs.json` - model profiles for local and Snellius runs.
+- `MODEL_SELECTION.md` - notes on model-family selection and scaling comparisons.
 
 ## Models
 
@@ -42,4 +44,30 @@ python runmodelsscript.py --models llama70b --num-ctx 4096
 python runmodelsscript.py --models llama13 qwen14b --repeats 4
 python runmodelsscript.py --num-predict 600
 python runmodelsscript.py --force
+```
+
+## Running With Hugging Face Transformers
+
+Install PyTorch for your CUDA version from the official PyTorch instructions, then install the remaining dependencies:
+
+```powershell
+pip install -r requirements-transformers.txt
+```
+
+Run the recommended local Qwen scaling profile:
+
+```powershell
+python run_transformers_prompts.py --profile local_qwen_scaling --repeats 1
+```
+
+Run the local Gemma scaling profile:
+
+```powershell
+python run_transformers_prompts.py --profile local_gemma_scaling --repeats 1
+```
+
+For memory-constrained runs, try 4-bit loading:
+
+```powershell
+python run_transformers_prompts.py --profile local_qwen_scaling --load-in-4bit
 ```

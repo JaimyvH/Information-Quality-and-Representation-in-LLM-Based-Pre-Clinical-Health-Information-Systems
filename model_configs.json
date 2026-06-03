@@ -1,0 +1,50 @@
+{
+  "local_qwen_scaling": [
+    {
+      "label": "qwen2.5_7b_instruct",
+      "model_id": "Qwen/Qwen2.5-7B-Instruct"
+    },
+    {
+      "label": "qwen2.5_14b_instruct",
+      "model_id": "Qwen/Qwen2.5-14B-Instruct"
+    }
+  ],
+  "local_gemma_scaling": [
+    {
+      "label": "gemma3_4b_it",
+      "model_id": "google/gemma-3-4b-it"
+    },
+    {
+      "label": "gemma3_12b_it",
+      "model_id": "google/gemma-3-12b-it"
+    }
+  ],
+  "snellius_qwen_scaling": [
+    {
+      "label": "qwen2.5_7b_instruct",
+      "model_id": "Qwen/Qwen2.5-7B-Instruct"
+    },
+    {
+      "label": "qwen2.5_14b_instruct",
+      "model_id": "Qwen/Qwen2.5-14B-Instruct"
+    },
+    {
+      "label": "qwen2.5_32b_instruct",
+      "model_id": "Qwen/Qwen2.5-32B-Instruct"
+    },
+    {
+      "label": "qwen2.5_72b_instruct",
+      "model_id": "Qwen/Qwen2.5-72B-Instruct"
+    }
+  ],
+  "snellius_llama_scaling": [
+    {
+      "label": "llama3.1_8b_instruct",
+      "model_id": "meta-llama/Llama-3.1-8B-Instruct"
+    },
+    {
+      "label": "llama3.1_70b_instruct",
+      "model_id": "meta-llama/Llama-3.1-70B-Instruct"
+    }
+  ]
+}

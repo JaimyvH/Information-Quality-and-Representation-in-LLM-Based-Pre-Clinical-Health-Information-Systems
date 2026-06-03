@@ -1,6 +1,0 @@
-FROM llama2:70b
-
-PARAMETER temperature 0.7
-PARAMETER top_p 0.9
-PARAMETER min_p 0.05
-PARAMETER num_ctx 8000
