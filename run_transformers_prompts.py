@@ -3,6 +3,7 @@ import gc
 import json
 import random
 import time
+import traceback
 from pathlib import Path
 
 import pandas as pd
@@ -52,6 +53,11 @@ def parse_args():
         help="Enable Qwen3 thinking mode when the tokenizer supports it. Disabled by default.",
     )
     parser.add_argument("--checkpoint-every", default=5, type=int)
+    parser.add_argument(
+        "--stop-on-error",
+        action="store_true",
+        help="Stop immediately after a generation error. Useful for debugging.",
+    )
     parser.add_argument("--force", action="store_true")
     return parser.parse_args()
 
@@ -274,8 +280,15 @@ def main():
                         set_cell(df, index, elapsed_col, f"{elapsed:.3f}")
                         print(f"[ok] {label} prompt {index + 1} in {elapsed:.1f}s")
                     except Exception as exc:
-                        set_cell(df, index, response_col, f"ERROR: {exc}")
-                        print(f"[error] {label} prompt {index + 1}: {exc}")
+                        error_text = "".join(
+                            traceback.format_exception_only(type(exc), exc)
+                        ).strip()
+                        if not error_text:
+                            error_text = repr(exc)
+                        set_cell(df, index, response_col, f"ERROR: {error_text}")
+                        print(f"[error] {label} prompt {index + 1}: {error_text}")
+                        if args.stop_on_error:
+                            raise
 
                     completed_since_checkpoint += 1
                     if completed_since_checkpoint >= args.checkpoint_every:
