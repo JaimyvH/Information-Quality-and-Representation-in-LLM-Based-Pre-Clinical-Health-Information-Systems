@@ -54,7 +54,7 @@ Install PyTorch for your CUDA version from the official PyTorch instructions, th
 pip install -r requirements-transformers.txt
 ```
 
-Run the recommended local Qwen scaling profile:
+Run the recommended local Qwen3 scaling profile:
 
 ```powershell
 python run_transformers_prompts.py --profile local_qwen_scaling --repeats 1
@@ -71,3 +71,5 @@ For memory-constrained runs, try 4-bit loading:
 ```powershell
 python run_transformers_prompts.py --profile local_qwen_scaling --load-in-4bit
 ```
+
+Qwen3 thinking mode is disabled by default where the tokenizer supports it, keeping outputs closer to ordinary instruction-following health-information answers. Use `--enable-thinking` only for a separate reasoning-focused robustness check.

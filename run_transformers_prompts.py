@@ -46,6 +46,11 @@ def parse_args():
     parser.add_argument("--seed", default=42, type=int)
     parser.add_argument("--dtype", default="auto", choices=["auto", "float16", "bfloat16"])
     parser.add_argument("--load-in-4bit", action="store_true")
+    parser.add_argument(
+        "--enable-thinking",
+        action="store_true",
+        help="Enable Qwen3 thinking mode when the tokenizer supports it. Disabled by default.",
+    )
     parser.add_argument("--checkpoint-every", default=5, type=int)
     parser.add_argument("--force", action="store_true")
     return parser.parse_args()
@@ -152,18 +157,26 @@ def load_tokenizer_and_model(model_id, args):
     return tokenizer, model
 
 
-def build_inputs(tokenizer, prompt):
+def build_inputs(tokenizer, prompt, enable_thinking):
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": prompt},
     ]
 
     if hasattr(tokenizer, "apply_chat_template") and tokenizer.chat_template:
-        return tokenizer.apply_chat_template(
-            messages,
-            add_generation_prompt=True,
-            return_tensors="pt",
-        )
+        try:
+            return tokenizer.apply_chat_template(
+                messages,
+                add_generation_prompt=True,
+                enable_thinking=enable_thinking,
+                return_tensors="pt",
+            )
+        except TypeError:
+            return tokenizer.apply_chat_template(
+                messages,
+                add_generation_prompt=True,
+                return_tensors="pt",
+            )
 
     fallback_prompt = (
         f"System:\n{SYSTEM_PROMPT}\n\n"
@@ -175,7 +188,7 @@ def build_inputs(tokenizer, prompt):
 
 def generate_response(tokenizer, model, prompt, args, seed):
     set_seed(seed)
-    input_ids = build_inputs(tokenizer, prompt).to(model.device)
+    input_ids = build_inputs(tokenizer, prompt, args.enable_thinking).to(model.device)
 
     generation_kwargs = {
         "max_new_tokens": args.max_new_tokens,
