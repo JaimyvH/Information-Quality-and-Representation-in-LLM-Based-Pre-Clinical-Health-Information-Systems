@@ -29,7 +29,7 @@ http://localhost:11434/api/generate
 It reads prompts from `AI_Health_Query_Prompt_Bank_filled.xlsx`, sends each prompt to the configured models, and writes the outputs to `results.xlsx` plus a CSV backup.
 
 The script runs all prompts for one model before switching to the next model. This keeps large models loaded in Ollama longer and avoids repeated reloads.
-By default, each response is allowed up to 500 generated tokens so outputs are less likely to be cut off during health-information explanations.
+By default, each response is allowed up to 350 generated tokens. A standardized system prompt asks models to answer in no more than 220 words, include safety cautions, and avoid unfinished lists.
 
 ```powershell
 python runmodelsscript.py

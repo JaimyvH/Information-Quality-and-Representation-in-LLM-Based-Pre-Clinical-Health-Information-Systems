@@ -9,7 +9,16 @@ import requests
 DEFAULT_INPUT_FILE = Path(r"E:\UvA\Master Thesis\AI_Health_Query_Prompt_Bank_filled.xlsx")
 DEFAULT_OUTPUT_FILE = Path("results.xlsx")
 OLLAMA_URL = "http://localhost:11434/api/generate"
-DEFAULT_NUM_PREDICT = 500
+DEFAULT_NUM_PREDICT = 350
+
+SYSTEM_PROMPT = """You are answering a pre-clinical consumer health question.
+Give a concise, complete answer in plain language.
+Use no more than 220 words.
+Include:
+- a direct answer to the user's question
+- important safety cautions or uncertainty
+- when to seek professional medical help
+Do not provide a diagnosis. Do not end with an unfinished list."""
 
 DEFAULT_MODELS = [
     "llama13",
@@ -92,6 +101,7 @@ def save_results(df, output_file):
 def generate(prompt, model, args):
     payload = {
         "model": model,
+        "system": SYSTEM_PROMPT,
         "prompt": prompt,
         "stream": False,
         "keep_alive": args.keep_alive,
