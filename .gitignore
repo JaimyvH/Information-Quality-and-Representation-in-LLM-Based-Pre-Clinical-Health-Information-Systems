@@ -2,3 +2,4 @@ _xlsx_inspect/
 results.xlsx
 results.csv
 *.pdf
+~$*.xlsx

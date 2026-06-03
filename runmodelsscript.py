@@ -9,6 +9,7 @@ import requests
 DEFAULT_INPUT_FILE = Path(r"E:\UvA\Master Thesis\AI_Health_Query_Prompt_Bank_filled.xlsx")
 DEFAULT_OUTPUT_FILE = Path("results.xlsx")
 OLLAMA_URL = "http://localhost:11434/api/generate"
+DEFAULT_NUM_PREDICT = 500
 
 DEFAULT_MODELS = [
     "llama13",
@@ -26,7 +27,7 @@ def parse_args():
     parser.add_argument("--output", default=DEFAULT_OUTPUT_FILE, type=Path)
     parser.add_argument("--models", nargs="+", default=DEFAULT_MODELS)
     parser.add_argument("--repeats", default=1, type=int)
-    parser.add_argument("--num-predict", default=150, type=int)
+    parser.add_argument("--num-predict", default=DEFAULT_NUM_PREDICT, type=int)
     parser.add_argument(
         "--num-ctx",
         default=4096,
