@@ -64,6 +64,7 @@ def load_or_create_results(input_file, output_file, columns):
     for column in columns:
         if column not in df.columns:
             df[column] = ""
+        df[column] = df[column].astype("object")
 
     return df
 
@@ -73,6 +74,12 @@ def has_response(value):
         return False
     text = str(value).strip()
     return bool(text) and not text.startswith("ERROR:")
+
+
+def set_cell(df, index, column, value):
+    if df[column].dtype != "object":
+        df[column] = df[column].astype("object")
+    df.at[index, column] = str(value)
 
 
 def save_results(df, output_file):
@@ -145,7 +152,7 @@ def main():
                 prompt = str(row["QUERY"]).strip()
 
                 if not prompt or prompt.lower() == "nan":
-                    df.at[index, column] = "ERROR: Missing prompt"
+                    set_cell(df, index, column, "ERROR: Missing prompt")
                     continue
 
                 if not args.force and has_response(row.get(column)):
@@ -156,10 +163,10 @@ def main():
 
                 try:
                     result, elapsed = generate(prompt, model, args)
-                    df.at[index, column] = result
+                    set_cell(df, index, column, result)
                     print(f"[ok] {model} prompt {index + 1} in {elapsed:.1f}s")
                 except Exception as exc:
-                    df.at[index, column] = f"ERROR: {exc}"
+                    set_cell(df, index, column, f"ERROR: {exc}")
                     print(f"[error] {model} prompt {index + 1}: {exc}")
 
                 completed_since_checkpoint += 1
