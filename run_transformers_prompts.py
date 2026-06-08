@@ -11,7 +11,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
 
-DEFAULT_INPUT_FILE = Path(r"E:\UvA\Master Thesis\AI_Health_Query_Prompt_Bank_filled.xlsx")
+DEFAULT_INPUT_FILE = Path("AI_Health_Query_Prompt_Bank_filled.xlsx")
 DEFAULT_OUTPUT_FILE = Path("results_transformers.xlsx")
 DEFAULT_MODEL_CONFIG = Path("model_configs.json")
 DEFAULT_NUM_PREDICT = 350

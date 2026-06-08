@@ -6,7 +6,7 @@ import pandas as pd
 import requests
 
 
-DEFAULT_INPUT_FILE = Path(r"E:\UvA\Master Thesis\AI_Health_Query_Prompt_Bank_filled.xlsx")
+DEFAULT_INPUT_FILE = Path("AI_Health_Query_Prompt_Bank_filled.xlsx")
 DEFAULT_OUTPUT_FILE = Path("results.xlsx")
 OLLAMA_URL = "http://localhost:11434/api/generate"
 DEFAULT_NUM_PREDICT = 350
