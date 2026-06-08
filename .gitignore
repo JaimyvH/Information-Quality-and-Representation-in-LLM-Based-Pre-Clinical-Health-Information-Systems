@@ -6,3 +6,5 @@ results_transformers.csv
 *.pdf
 ~$*.xlsx
 _docx_application_form/
+logs/
+results_snellius/

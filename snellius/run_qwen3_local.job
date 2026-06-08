@@ -1,0 +1,44 @@
+#!/bin/bash
+#SBATCH --job-name=mt-qwen3-local
+#SBATCH --partition=gpu_mig
+#SBATCH --gpus=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=9
+#SBATCH --mem=48G
+#SBATCH --time=08:00:00
+#SBATCH --output=logs/%x-%j.out
+
+set -euo pipefail
+
+PROJECT_DIR="${PROJECT_DIR:-$HOME/master-thesis}"
+VENV_DIR="${VENV_DIR:-$HOME/.venvs/master-thesis-transformers}"
+SCRATCH_BASE="${SCRATCH_BASE:-/scratch-shared/$USER/master-thesis}"
+OUTPUT_DIR="$SCRATCH_BASE/outputs"
+OUTPUT_FILE="$OUTPUT_DIR/results_qwen3_local.xlsx"
+
+mkdir -p "$PROJECT_DIR/logs" "$SCRATCH_BASE/hf_cache" "$OUTPUT_DIR"
+
+module purge
+module load 2025
+module load Anaconda3/2025.06-1
+
+source "$VENV_DIR/bin/activate"
+
+export HF_HOME="$SCRATCH_BASE/hf_cache"
+export HF_HUB_CACHE="$SCRATCH_BASE/hf_cache/hub"
+export TRANSFORMERS_CACHE="$SCRATCH_BASE/hf_cache/transformers"
+export TOKENIZERS_PARALLELISM=false
+
+cd "$PROJECT_DIR"
+
+srun python run_transformers_prompts.py \
+  --profile local_qwen_scaling \
+  --load-in-4bit \
+  --dtype float16 \
+  --repeats 1 \
+  --output "$OUTPUT_FILE"
+
+mkdir -p "$PROJECT_DIR/results_snellius"
+cp "$OUTPUT_FILE" "$PROJECT_DIR/results_snellius/"
+cp "${OUTPUT_FILE%.xlsx}.csv" "$PROJECT_DIR/results_snellius/" || true
+
