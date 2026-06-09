@@ -174,6 +174,19 @@ def load_tokenizer_and_model(model_id, args):
     return tokenizer, model
 
 
+def move_inputs_to_device(inputs, device):
+    if torch.is_tensor(inputs):
+        return {"input_ids": inputs.to(device)}
+
+    if hasattr(inputs, "data"):
+        inputs = inputs.data
+
+    return {
+        key: value.to(device) if torch.is_tensor(value) else value
+        for key, value in dict(inputs).items()
+    }
+
+
 def build_inputs(tokenizer, prompt, enable_thinking):
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
@@ -200,14 +213,16 @@ def build_inputs(tokenizer, prompt, enable_thinking):
         f"User:\n{prompt}\n\n"
         "Assistant:\n"
     )
-    return tokenizer(fallback_prompt, return_tensors="pt").input_ids
+    return tokenizer(fallback_prompt, return_tensors="pt")
 
 
 def generate_response(tokenizer, model, prompt, args, seed):
     set_seed(seed)
-    input_ids = build_inputs(tokenizer, prompt, args.enable_thinking).to(
-        get_input_device(model)
+    inputs = move_inputs_to_device(
+        build_inputs(tokenizer, prompt, args.enable_thinking),
+        get_input_device(model),
     )
+    input_length = inputs["input_ids"].shape[-1]
 
     generation_kwargs = {
         "max_new_tokens": args.max_new_tokens,
@@ -223,10 +238,10 @@ def generate_response(tokenizer, model, prompt, args, seed):
 
     started = time.perf_counter()
     with torch.inference_mode():
-        output_ids = model.generate(input_ids, **generation_kwargs)
+        output_ids = model.generate(**inputs, **generation_kwargs)
     elapsed = time.perf_counter() - started
 
-    new_tokens = output_ids[0, input_ids.shape[-1]:]
+    new_tokens = output_ids[0, input_length:]
     text = tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
     return text, elapsed
 
