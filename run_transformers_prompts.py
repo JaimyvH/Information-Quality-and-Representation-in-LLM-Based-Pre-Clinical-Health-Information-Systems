@@ -131,6 +131,17 @@ def set_seed(seed):
         torch.cuda.manual_seed_all(seed)
 
 
+def get_input_device(model):
+    device = getattr(model, "device", None)
+    if device is not None:
+        return device
+
+    try:
+        return model.get_input_embeddings().weight.device
+    except Exception:
+        return next(model.parameters()).device
+
+
 def dtype_from_arg(dtype):
     if dtype == "float16":
         return torch.float16
@@ -194,7 +205,9 @@ def build_inputs(tokenizer, prompt, enable_thinking):
 
 def generate_response(tokenizer, model, prompt, args, seed):
     set_seed(seed)
-    input_ids = build_inputs(tokenizer, prompt, args.enable_thinking).to(model.device)
+    input_ids = build_inputs(tokenizer, prompt, args.enable_thinking).to(
+        get_input_device(model)
+    )
 
     generation_kwargs = {
         "max_new_tokens": args.max_new_tokens,
@@ -281,12 +294,13 @@ def main():
                         print(f"[ok] {label} prompt {index + 1} in {elapsed:.1f}s")
                     except Exception as exc:
                         error_text = "".join(
-                            traceback.format_exception_only(type(exc), exc)
+                            traceback.format_exception(type(exc), exc, exc.__traceback__)
                         ).strip()
                         if not error_text:
                             error_text = repr(exc)
-                        set_cell(df, index, response_col, f"ERROR: {error_text}")
-                        print(f"[error] {label} prompt {index + 1}: {error_text}")
+                        stored_error = error_text[-3000:]
+                        set_cell(df, index, response_col, f"ERROR: {stored_error}")
+                        print(f"[error] {label} prompt {index + 1}: {stored_error}")
                         if args.stop_on_error:
                             raise
 
