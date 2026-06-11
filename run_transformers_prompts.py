@@ -33,13 +33,13 @@ def parse_args():
     parser.add_argument("--input", default=DEFAULT_INPUT_FILE, type=Path)
     parser.add_argument("--output", default=DEFAULT_OUTPUT_FILE, type=Path)
     parser.add_argument("--model-config", default=DEFAULT_MODEL_CONFIG, type=Path)
-    parser.add_argument("--profile", default="local_qwen_scaling")
+    parser.add_argument("--profile", default="snellius_qwen_core")
     parser.add_argument(
         "--models",
         nargs="+",
         help="Optional explicit Hugging Face model IDs. Overrides --profile.",
     )
-    parser.add_argument("--repeats", default=1, type=int)
+    parser.add_argument("--repeats", default=4, type=int)
     parser.add_argument("--max-new-tokens", default=DEFAULT_NUM_PREDICT, type=int)
     parser.add_argument("--temperature", default=0.7, type=float)
     parser.add_argument("--top-p", default=0.9, type=float)

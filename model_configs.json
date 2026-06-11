@@ -1,5 +1,5 @@
 {
-  "local_qwen_scaling": [
+  "snellius_qwen_core": [
     {
       "label": "qwen3_4b_instruct_2507",
       "model_id": "Qwen/Qwen3-4B-Instruct-2507"
@@ -9,7 +9,7 @@
       "model_id": "Qwen/Qwen3-8B"
     }
   ],
-  "local_gemma_scaling": [
+  "snellius_gemma_core": [
     {
       "label": "gemma3_4b_it",
       "model_id": "google/gemma-3-4b-it"
@@ -19,15 +19,7 @@
       "model_id": "google/gemma-3-12b-it"
     }
   ],
-  "snellius_qwen_scaling": [
-    {
-      "label": "qwen3_4b_instruct_2507",
-      "model_id": "Qwen/Qwen3-4B-Instruct-2507"
-    },
-    {
-      "label": "qwen3_8b",
-      "model_id": "Qwen/Qwen3-8B"
-    },
+  "snellius_qwen_extended": [
     {
       "label": "qwen3_14b",
       "model_id": "Qwen/Qwen3-14B"
@@ -39,6 +31,12 @@
     {
       "label": "qwen3_30b_a3b_instruct_2507",
       "model_id": "Qwen/Qwen3-30B-A3B-Instruct-2507"
+    }
+  ],
+  "snellius_gemma_extended": [
+    {
+      "label": "gemma3_27b_it",
+      "model_id": "google/gemma-3-27b-it"
     }
   ],
   "snellius_llama_scaling": [

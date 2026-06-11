@@ -3,6 +3,8 @@ results.xlsx
 results.csv
 results_transformers.xlsx
 results_transformers.csv
+results_*.xlsx
+results_*.csv
 *.pdf
 ~$*.xlsx
 _docx_application_form/
