@@ -150,6 +150,12 @@ def dtype_from_arg(dtype):
     return "auto"
 
 
+def bnb_compute_dtype_from_arg(dtype):
+    if dtype == "bfloat16":
+        return torch.bfloat16
+    return torch.float16
+
+
 def load_tokenizer_and_model(model_id, args):
     print(f"Loading model: {model_id}")
     tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
@@ -159,7 +165,7 @@ def load_tokenizer_and_model(model_id, args):
         quantization_config = BitsAndBytesConfig(
             load_in_4bit=True,
             bnb_4bit_quant_type="nf4",
-            bnb_4bit_compute_dtype=torch.float16,
+            bnb_4bit_compute_dtype=bnb_compute_dtype_from_arg(args.dtype),
             bnb_4bit_use_double_quant=True,
         )
 
@@ -230,6 +236,8 @@ def generate_response(tokenizer, model, prompt, args, seed):
         "temperature": args.temperature,
         "top_p": args.top_p,
         "pad_token_id": tokenizer.eos_token_id,
+        "renormalize_logits": True,
+        "remove_invalid_values": True,
     }
 
     # min_p is available in recent Transformers versions.

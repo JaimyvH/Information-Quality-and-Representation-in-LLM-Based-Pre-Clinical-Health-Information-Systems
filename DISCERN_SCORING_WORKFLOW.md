@@ -32,6 +32,10 @@ The first model run is stored under the model label. Later repeats use `_run2`, 
 
 Technical errors should not be treated as health-information answers. They should either be regenerated or reported separately as technical failures. Weak, incomplete, or medically poor answers should remain in the scoring set because they represent model quality.
 
+## Gemma Regeneration Note
+
+If Gemma outputs contain CUDA tracebacks rather than health-information responses, regenerate the Gemma result file after pulling the latest code. The Transformers runner keeps the same substantive decoding settings but enables logits renormalization and invalid-value removal during generation, and the Gemma Snellius jobs use bfloat16 4-bit compute on A100/H100 hardware. This avoids treating technical GPU sampling failures as model answers.
+
 ## AutoDiscern-Adapted Automated Scoring
 
 The AutoDiscern repository from Krauthammer Lab demonstrates that automated DISCERN-style assessment is feasible, but it is not directly plug-and-play for this thesis because the repository does not include the underlying data or trained experiment objects and was designed for online health webpages rather than generated LLM responses.

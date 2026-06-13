@@ -35,7 +35,7 @@ cd "$PROJECT_DIR"
 srun python run_transformers_prompts.py \
   --profile snellius_gemma_core \
   --load-in-4bit \
-  --dtype float16 \
+  --dtype bfloat16 \
   --repeats "$REPEATS" \
   --output "$OUTPUT_FILE"
 
