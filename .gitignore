@@ -1,4 +1,5 @@
 _xlsx_inspect/
+__pycache__/
 results.xlsx
 results.csv
 results_transformers.xlsx

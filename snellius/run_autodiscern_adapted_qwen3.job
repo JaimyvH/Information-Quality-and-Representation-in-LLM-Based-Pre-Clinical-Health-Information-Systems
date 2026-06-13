@@ -1,0 +1,56 @@
+#!/bin/bash
+#SBATCH --job-name=mt-autodiscern
+#SBATCH --partition=gpu_h100
+#SBATCH --gpus=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=120G
+#SBATCH --time=24:00:00
+#SBATCH --output=logs/%x-%j.out
+
+set -euo pipefail
+
+PROJECT_DIR="${PROJECT_DIR:-$HOME/master-thesis}"
+VENV_DIR="${VENV_DIR:-$HOME/.venvs/master-thesis-transformers}"
+SCRATCH_BASE="${SCRATCH_BASE:-/scratch-shared/$USER/master-thesis}"
+INPUT_FILE="${INPUT_FILE:-$PROJECT_DIR/results_snellius/discern_scoring_qwen3_core.xlsx}"
+OUTPUT_FILE="${OUTPUT_FILE:-$SCRATCH_BASE/outputs/autodiscern_adapted_scores_qwen3_core.xlsx}"
+JUDGE_MODEL_ID="${JUDGE_MODEL_ID:-meta-llama/Llama-3.1-70B-Instruct}"
+RESULT_FILE="${RESULT_FILE:-$PROJECT_DIR/results_snellius/results_qwen3_core_snellius.xlsx}"
+
+mkdir -p "$PROJECT_DIR/logs" "$SCRATCH_BASE/hf_cache" "$SCRATCH_BASE/outputs"
+
+module purge
+module load 2025
+module load Anaconda3/2025.06-1
+
+source "$VENV_DIR/bin/activate"
+
+export HF_HOME="$SCRATCH_BASE/hf_cache"
+export HF_HUB_CACHE="$SCRATCH_BASE/hf_cache/hub"
+export TRANSFORMERS_CACHE="$SCRATCH_BASE/hf_cache/transformers"
+export TOKENIZERS_PARALLELISM=false
+
+cd "$PROJECT_DIR"
+
+if [ ! -f "$INPUT_FILE" ]; then
+  if [ ! -f "$RESULT_FILE" ]; then
+    RESULT_FILE="$SCRATCH_BASE/outputs/results_qwen3_core_snellius.xlsx"
+  fi
+
+  python prepare_discern_scoring.py \
+    "$RESULT_FILE" \
+    --output "$INPUT_FILE"
+fi
+
+srun python run_autodiscern_adapted_scorer.py \
+  --input "$INPUT_FILE" \
+  --output "$OUTPUT_FILE" \
+  --model-id "$JUDGE_MODEL_ID" \
+  --load-in-4bit \
+  --dtype bfloat16 \
+  --checkpoint-every 5
+
+mkdir -p "$PROJECT_DIR/results_snellius"
+cp "$OUTPUT_FILE" "$PROJECT_DIR/results_snellius/"
+cp "${OUTPUT_FILE%.xlsx}.csv" "$PROJECT_DIR/results_snellius/" || true
