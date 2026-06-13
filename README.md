@@ -10,6 +10,8 @@ The final inference experiments are run on Snellius with Hugging Face Transforme
 - `run_transformers_prompts.py` - Hugging Face Transformers runner for the controlled Snellius experiment.
 - `model_configs.json` - model profiles for the Snellius model groups.
 - `MODEL_SELECTION.md` - notes on model-family selection and scaling comparisons.
+- `prepare_discern_scoring.py` - converts model outputs to blinded DISCERN scoring workbooks.
+- `DISCERN_SCORING_WORKFLOW.md` - scoring workflow notes, including automated scoring cautions.
 - `snellius/` - Snellius setup and batch-job scripts.
 - `runmodelsscript.py` - legacy Ollama runner from the earlier development phase.
 
